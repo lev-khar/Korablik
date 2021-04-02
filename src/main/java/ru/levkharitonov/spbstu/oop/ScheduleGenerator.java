@@ -17,13 +17,13 @@ public class ScheduleGenerator {
     final private static int CONTAINER_LIMIT = 20000;
     final private static int UNIX_DAY = 86400000;
 
-    static private Map<CargoType, PriorityQueue<Ship>> queues;
+    static private Map<CargoType, ArrayList<Ship>> queues;
 
     public ScheduleGenerator() {
-        queues = new HashMap<CargoType, PriorityQueue<Ship>>();
+        queues = new HashMap<>();
     }
 
-    public static Map<CargoType, PriorityQueue<Ship>> getQueues() {
+    public static Map<CargoType, ArrayList<Ship>> getQueues() {
         return queues;
     }
 
@@ -40,42 +40,27 @@ public class ScheduleGenerator {
         return new Cargo(type, quantity);
     }
 
-
     public void generate(int quantity) {
-        PriorityQueue<Ship> dry = new PriorityQueue<>(shipComparator);
-        PriorityQueue<Ship> liquid = new PriorityQueue<>(shipComparator);
-        PriorityQueue<Ship> container = new PriorityQueue<>(shipComparator);
-        queues.put(CargoType.DRY, dry);
-        queues.put(CargoType.LIQUID, liquid);
-        queues.put(CargoType.CONTAINER, container);
+        queues.put(CargoType.DRY, new ArrayList<>());
+        queues.put(CargoType.LIQUID, new ArrayList<>());
+        queues.put(CargoType.CONTAINER, new ArrayList<>());
         NameGenerator namegen = new NameGenerator();
-        for(int i = 0; i < quantity; i++) {
+        for (int i = 0; i < quantity; i++) {
             Cargo cargo = generateCargo();
-            switch (cargo.getType()){
-                case DRY -> dry.add(new Ship(generateDate(),
-                        namegen.generateName(), cargo));
-                case LIQUID -> liquid.add(new Ship(generateDate(),
-                        namegen.generateName(), cargo));
-                case CONTAINER -> container.add(new Ship(generateDate(),
-                        namegen.generateName(), cargo));
-            }
+            Ship ship = new Ship(generateDate(), namegen.generateName(), cargo);
+            queues.get(cargo.getType()).add(ship);
+        }
+        for (CargoType ct: queues.keySet()) {
+            queues.get(ct).sort(shipComparator);
         }
     }
 
-    Consumer<Ship> changeArrival = new Consumer<Ship>() {
-        @Override
-        public void accept(Ship ship) {
+    Consumer<Ship> changeArrival = ship ->
             ship.setArrival(ship.getArrival().getTime() +
                     rand.nextInt(UNIX_DAY * 14) - (UNIX_DAY * 7));
-        }
-    };
 
-    Consumer<Ship> changeUnloading = new Consumer<Ship>() {
-        @Override
-        public void accept(Ship ship) {
+    Consumer<Ship> changeUnloading = ship ->
             ship.setUnloadingMins(ship.getUnloadingMins() + rand.nextInt(1440));
-        }
-    };
 
     public void infuseChaos() {
         for(CargoType ct: CargoType.values()) {
@@ -117,5 +102,6 @@ public class ScheduleGenerator {
             throw new InputMismatchException("Negative cargo quantity");
         }
         queues.get(cargo.getType()).add(new Ship(arrival, name, cargo));
+        queues.get(cargo.getType()).sort(shipComparator);
     }
 }

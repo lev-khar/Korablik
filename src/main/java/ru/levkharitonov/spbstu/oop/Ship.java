@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.function.Consumer;
 
 @JsonDeserialize(using = JsonDeserializer.class)
 public class Ship {
@@ -34,13 +35,8 @@ public class Ship {
         };
     }
 
-
-    public static Comparator<Ship> shipComparator = new Comparator<Ship>() {
-        @Override
-        public int compare(Ship o1, Ship o2) {
-            return o1.getArrival().compareTo(o2.getArrival());
-        }
-    };
+    public static Comparator<Ship> shipComparator = Comparator.comparing(Ship::getArrival);
+    public static Consumer<Ship> print = System.out::println;
 
     public Date getArrival() {
         return arrival;

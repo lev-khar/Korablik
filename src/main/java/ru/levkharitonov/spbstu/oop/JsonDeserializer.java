@@ -15,12 +15,14 @@ public class JsonDeserializer extends StdDeserializer<Ship> {
     public JsonDeserializer() {
         this(null);
     }
+
     protected JsonDeserializer(Class<?> vc) {
         super(vc);
     }
 
     @Override
-    public Ship deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Ship deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+            throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
         long arrivalTime = node.get("arrival").asLong();
         Date arrival = new Date(arrivalTime);
