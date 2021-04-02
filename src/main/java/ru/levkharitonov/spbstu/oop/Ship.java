@@ -1,6 +1,5 @@
 package ru.levkharitonov.spbstu.oop;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Comparator;
@@ -10,18 +9,22 @@ import java.util.function.Consumer;
 @JsonDeserialize(using = JsonDeserializer.class)
 public class Ship {
     final private static float DRY_TONS_PER_MIN = 80;
-    final private static float LIQUD_TONS_PER_MIN = 50;
+    final private static float LIQUID_TONS_PER_MIN = 50;
     final private static float CONTAINER_PER_MIN = 4;
     private Date arrival;
     private String name;
     private Cargo cargo;
     private int unloadingMins;
+    private int fine;
+    private int cranes;
 
     public Ship(Date arrival, String name, Cargo cargo, int unloadingMins) {
         this.arrival = arrival;
         this.name = name;
         this.cargo = cargo;
         this.unloadingMins = unloadingMins;
+        this.fine = 0;
+        this.cranes = 0;
     }
 
     public Ship(Date arrival, String name, Cargo cargo) {
@@ -30,17 +33,25 @@ public class Ship {
         this.cargo = cargo;
         this.unloadingMins = switch(cargo.getType()){
             case DRY -> (int)Math.ceil(cargo.getQuantity() / DRY_TONS_PER_MIN);
-            case LIQUID -> (int)Math.ceil(cargo.getQuantity() / LIQUD_TONS_PER_MIN);
+            case LIQUID -> (int)Math.ceil(cargo.getQuantity() / LIQUID_TONS_PER_MIN);
             case CONTAINER -> (int)Math.ceil(cargo.getQuantity() / CONTAINER_PER_MIN);
         };
+        this.fine = 0;
+        this.cranes = 0;
+    }
+
+    public Ship(Ship ship) {
+        this.arrival = ship.arrival;
+        this.name = ship.name;
+        this.cargo = ship.cargo;
+        this.unloadingMins = ship.unloadingMins;
+        this.fine = ship.fine;
+        this.cranes = ship.cranes;
     }
 
     public static Comparator<Ship> shipComparator = Comparator.comparing(Ship::getArrival);
-    public static Consumer<Ship> print = System.out::println;
 
-    public Date getArrival() {
-        return arrival;
-    }
+    public static Consumer<Ship> print = System.out::println;
 
     @Override
     public String toString() {
@@ -50,6 +61,10 @@ public class Ship {
                 ", cargo=" + cargo +
                 ", unloading minutes=" + unloadingMins +
                 '}';
+    }
+
+    public Date getArrival() {
+        return arrival;
     }
 
     public void setArrival(long arrival) {
@@ -78,5 +93,22 @@ public class Ship {
 
     public void setUnloadingMins(int um) {
         this.unloadingMins = um;
+    }
+
+    public int getFine() {
+        return fine;
+    }
+
+    public void setFine(int fine) {
+        this.fine = fine;
+    }
+
+    public int getCranes() {
+        return cranes;
+    }
+
+    public void setCranes(int cranes) {
+        if (cranes == 2) this.unloadingMins = (int)Math.ceil(unloadingMins / 2.);
+        this.cranes = cranes;
     }
 }

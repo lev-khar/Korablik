@@ -15,7 +15,6 @@ public class ScheduleGenerator {
     final private static java.util.Random rand = new java.util.Random();
     final private static int CARGO_LIMIT = 300000;
     final private static int CONTAINER_LIMIT = 20000;
-    final private static int UNIX_DAY = 86400000;
 
     static private Map<CargoType, ArrayList<Ship>> queues;
 
@@ -52,20 +51,6 @@ public class ScheduleGenerator {
         }
         for (CargoType ct: queues.keySet()) {
             queues.get(ct).sort(shipComparator);
-        }
-    }
-
-    Consumer<Ship> changeArrival = ship ->
-            ship.setArrival(ship.getArrival().getTime() +
-                    rand.nextInt(UNIX_DAY * 14) - (UNIX_DAY * 7));
-
-    Consumer<Ship> changeUnloading = ship ->
-            ship.setUnloadingMins(ship.getUnloadingMins() + rand.nextInt(1440));
-
-    public void infuseChaos() {
-        for(CargoType ct: CargoType.values()) {
-            queues.get(ct).forEach(changeArrival);
-            queues.get(ct).forEach(changeUnloading);
         }
     }
 

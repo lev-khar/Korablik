@@ -23,6 +23,7 @@ public class JsonWriter {
         }
         return sg;
     }
+
     public static void addManually(ScheduleGenerator sg) {
         Scanner in = new Scanner(System.in);
         System.out.print("Number of manually added ships (0 if there are none): ");
