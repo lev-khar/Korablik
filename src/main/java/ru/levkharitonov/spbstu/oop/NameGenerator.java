@@ -14,8 +14,8 @@ public class NameGenerator {
     final private java.util.Random rand = new java.util.Random();
 
     public NameGenerator() {
-        first = reader("src/main/resources/first.txt");
-        second = reader("src/main/resources/second.txt");
+        first = read("src/main/resources/first.txt");
+        second = read("src/main/resources/second.txt");
         Collections.shuffle(first);
         Collections.shuffle(second);
     }
@@ -24,8 +24,8 @@ public class NameGenerator {
         return first.get(rand.nextInt(first.size())) + " " + second.get(rand.nextInt(second.size()));
     }
 
-    private static List<String> reader(String path) {
-        List<String> list = new ArrayList<>();
+    private static List<String> read(String path) {
+        List<String> list = new ArrayList<>(220);
         try {
             FileReader fileReader = new FileReader(path);
             BufferedReader fb = new BufferedReader(fileReader);

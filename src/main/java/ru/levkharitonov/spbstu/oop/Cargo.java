@@ -4,6 +4,11 @@ public class Cargo {
     private CargoType type;
     private int quantity;
 
+    public Cargo() {
+        this.type = null;
+        this.quantity = 0;
+    }
+
     public Cargo(CargoType type, int quantity) {
         this.type = type;
         this.quantity = quantity;
