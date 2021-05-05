@@ -15,16 +15,12 @@ public class Ship {
     private String name;
     private Cargo cargo;
     private int unloadingMins;
-    private int fine;
-    private int cranes;
 
     public Ship(Date arrival, String name, Cargo cargo, int unloadingMins) {
         this.arrival = arrival;
         this.name = name;
         this.cargo = cargo;
         this.unloadingMins = unloadingMins;
-        this.fine = 0;
-        this.cranes = 0;
     }
 
     public Ship(Date arrival, String name, Cargo cargo) {
@@ -36,8 +32,6 @@ public class Ship {
             case LIQUID -> (int)Math.ceil(cargo.getQuantity() / LIQUID_TONS_PER_MIN);
             case CONTAINER -> (int)Math.ceil(cargo.getQuantity() / CONTAINER_PER_MIN);
         };
-        this.fine = 0;
-        this.cranes = 0;
     }
 
     public Ship(Ship ship) {
@@ -45,8 +39,6 @@ public class Ship {
         this.name = ship.name;
         this.cargo = ship.cargo;
         this.unloadingMins = ship.unloadingMins;
-        this.fine = ship.fine;
-        this.cranes = ship.cranes;
     }
 
     public static Comparator<Ship> shipComparator = Comparator.comparing(Ship::getArrival);
@@ -93,22 +85,5 @@ public class Ship {
 
     public void setUnloadingMins(int um) {
         this.unloadingMins = um;
-    }
-
-    public int getFine() {
-        return fine;
-    }
-
-    public void setFine(int fine) {
-        this.fine = fine;
-    }
-
-    public int getCranes() {
-        return cranes;
-    }
-
-    public void setCranes(int cranes) {
-        if (cranes == 2) this.unloadingMins = (int)Math.ceil(unloadingMins / 2.);
-        this.cranes = cranes;
     }
 }

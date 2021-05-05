@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static ru.levkharitonov.spbstu.oop.Ship.shipComparator;
 
+//TODO Костыль костыльнейший, нужно переделать
 public class JsonReader {
-    public static Map<CargoType, ArrayList<Ship>> readSchedule() throws IOException {
+    public static Map<CargoType, ConcurrentLinkedQueue<Ship>> readSchedule() throws IOException {
         TypeReference<HashMap<String, ArrayList<Ship>>> typeRef = new TypeReference<>() {};
         HashMap<String, ArrayList<Ship>> queues = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
@@ -19,17 +21,18 @@ public class JsonReader {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        HashMap<CargoType, ArrayList<Ship>> res = new HashMap<>();
+
+        for (String ct: queues.keySet()) {
+            queues.get(ct).sort(shipComparator);
+        }
+        HashMap<CargoType, ConcurrentLinkedQueue<Ship>> res = new HashMap<>();
         for( String ct: queues.keySet()) {
             switch (ct) {
-                case "DRY" -> res.put(CargoType.DRY, queues.get(ct));
-                case "LIQUID" -> res.put(CargoType.LIQUID, queues.get(ct));
-                case "CONTAINER" -> res.put(CargoType.CONTAINER, queues.get(ct));
+                case "DRY" -> res.put(CargoType.DRY, new ConcurrentLinkedQueue<>(queues.get(ct)));
+                case "LIQUID" -> res.put(CargoType.LIQUID, new ConcurrentLinkedQueue<>(queues.get(ct)));
+                case "CONTAINER" -> res.put(CargoType.CONTAINER, new ConcurrentLinkedQueue<>(queues.get(ct)));
                 default -> throw new IOException("Error reading Ship");
             }
-        }
-        for (CargoType ct: res.keySet()) {
-            res.get(ct).sort(shipComparator);
         }
         return res;
     }

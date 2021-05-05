@@ -1,131 +1,120 @@
 package ru.levkharitonov.spbstu.oop;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
-
-import static ru.levkharitonov.spbstu.oop.Ship.print;
+import java.util.stream.Collectors;
 
 public class Simulation {
     final private static java.util.Random rand = new java.util.Random();
-    final private static int CRANE_COST = 30000;
+    final private static long CRANE_COST = 30000;
+    final private static int FINE_HOUR = 100;
     final private static int UNIX_DAY = 86400000;
     final private static long UNIX_MINS = 60000;
+    final private static long UNIX_HOUR = 3600000;
     final private static Date DATE_START = new Date(1617235199000L);
     final private static Date DATE_END = new Date(1619827200000L);
-    final private Map<CargoType, ArrayList<Ship>> queues;
+    private Map<CargoType, ConcurrentLinkedQueue<Ship>> queues;
+    private List<UnloadingEvent> unloads;
+    private int threads = 0;
 
-    public Simulation(Map<CargoType, ArrayList<Ship>> queues) {
-        this.queues = queues;
-    }
-
-    public class Unloader extends Thread {
-        private ArrayList<Ship> ships;
-        private int fine = 0;
-
-        public Unloader(ArrayList<Ship> ships) {
-            this.ships = ships;
+    public Simulation() {
+        try {
+            this.queues = JsonReader.readSchedule();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        @Override
-        public void run() {
-            int craneCount = 0;
-            while (fine >= CRANE_COST * craneCount) {
-                craneCount++;
-                fine = 0;
-                ArrayList<Crane> cranes = new ArrayList<>(craneCount);
-                for(int i = 0; i < craneCount; i++) {
-                    cranes.add(new Crane(ships));
-                }
-                //for (long time = DATE_START.getTime(); time < DATE_END.getTime(); time++) {
-                    for(int i = 0; i < craneCount; i++) {
-                        cranes.get(i).start();
-                    }
-                    for(int i = 0; i < craneCount; i++) {
-                        try {
-                            cranes.get(i).join();
-                            fine += cranes.get(i).getFine();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                //}
-            }
-            System.out.println(fine + " " + craneCount);
-        }
-
-
-        class Crane extends Thread {
-            private ArrayList<Ship> ships;
-            private long time;
-            private Ship current;
-            private int fine = 0;
-
-            public Crane(ArrayList<Ship> ships) {
-                this.ships = ships;
-                this.time = DATE_START.getTime();
-            }
-
-            public int getFine() {
-                return fine;
-            }
-
-            @Override
-            public void run() {
-                for(Ship ship : ships) {
-                    if (ship.getArrival().before(new Date(time))) {
-                        if (ship.getCranes() >= 2) {
-                            continue;
-                        }
-                        ship.setCranes(ship.getCranes() + 1);
-                        current = ship;
-                        break;
-                    }
-                    else {
-                        time += UNIX_MINS;
-                        return;
-                    }
-                }
-                long finishTime = current.getArrival().getTime() + current.getUnloadingMins() * UNIX_MINS;
-                if (time >= finishTime) {
-                    ships.remove(current);
-                    long queueTime = time - finishTime;
-                    if(queueTime >= 0) {
-                        current.setFine(current.getFine() + (int)queueTime/36000);
-                    }
-                    fine += current.getFine();
-                }
-                time += UNIX_MINS;
-            }
-        }
-
     }
 
     public void simulate() {
-        infuseChaos();
-        ArrayList<Thread> unloaders = new ArrayList<>(queues.keySet().size());
-        for (CargoType ct: queues.keySet()) {
-            ArrayList<Ship> ships = new ArrayList<>(queues.get(ct).size());
-            for (Ship s : queues.get(ct)) {
-                ships.add(new Ship(s));
-            }
-            unloaders.add(new Unloader(ships));
+        try {
+            this.queues = JsonReader.readSchedule();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        for (Thread unloader : unloaders) {
-            unloader.start();
-        }
-        for (Thread unloader : unloaders) {
+        Map<CargoType, Integer> craneCount = new HashMap<>();
+        craneCount.put(CargoType.DRY, 1);
+        craneCount.put(CargoType.LIQUID, 1);
+        craneCount.put(CargoType.CONTAINER, 1);
+
+        boolean modified;
+        do {
             try {
-                unloader.join();
-            } catch (InterruptedException e) {
+                this.queues = JsonReader.readSchedule();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+            infuseChaos(); //TODO разобраться в каком месте это делать
+            Map<CargoType, Long> fines = runSimulation(craneCount, queues);
+            System.out.println(craneCount);
+            modified = false;
+            for (CargoType ct: fines.keySet()) {
+                if(fines.get(ct) >= CRANE_COST) {
+                    craneCount.replace(ct, craneCount.get(ct) + 1);
+                    modified = true;
+                }
+            }
+        } while (modified);
 
     }
 
+    private Map<CargoType, Long> runSimulation(Map<CargoType, Integer> craneCount, Map<CargoType, ConcurrentLinkedQueue<Ship>> workQueues) {
 
+        List<Crane> cranes = new LinkedList<>();
+        threads = 0;
+        for (CargoType ct: workQueues.keySet()) {
+            for(int i = 0; i < craneCount.get(ct); i++) {
+                Crane crane = new Crane();
+                crane.setShips(workQueues.get(ct));
+                cranes.add(crane);
+                threads++;
+            }
+        }
+
+        ExecutorService executorService = Executors.newFixedThreadPool(threads);
+        try {
+            unloads = new LinkedList<>();
+            List<Future<List<UnloadingEvent>>> results = executorService.invokeAll(cranes);
+            for (Future<List<UnloadingEvent>> f: results) {
+                unloads.addAll(f.get().stream().filter(Objects::nonNull).collect(Collectors.toList()));
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        executorService.shutdown();
+        Map<CargoType, Long> delayFines = new HashMap<>();
+        delayFines.put(CargoType.DRY, 0L);
+        delayFines.put(CargoType.LIQUID, 0L);
+        delayFines.put(CargoType.CONTAINER, 0L);
+        for (UnloadingEvent unload: unloads) {
+            delayFines.compute(unload.getCargo().getType(), (k, v) -> v + (unload.getDelay()/ UNIX_HOUR * FINE_HOUR));
+        }
+        return delayFines;
+    }
+
+    private void printUnloadingEvents() {
+        unloads.forEach(System.out::println);
+    }
+
+    public void printReport() {
+        printUnloadingEvents();
+        long avgDelay = 0;
+        long allDelay = 0;
+        long maxDelay = 0;
+        for (UnloadingEvent unload: unloads) {
+            maxDelay = Math.max(maxDelay, unload.getDelay());
+            avgDelay += unload.getDelay();
+            allDelay += unload.getDelay();
+        }
+        avgDelay /= unloads.size();
+        System.out.println("\nShips unloaded: " + unloads.size());
+        System.out.println("Max delay: " + formatTime(maxDelay));
+        System.out.println("Average delay: " + formatTime(avgDelay));
+        System.out.println("Fines for all ships: " + allDelay / UNIX_HOUR * FINE_HOUR);
+        System.out.println("Cranes needed: " + threads);
+
+    }
 
     Consumer<Ship> changeArrival = ship ->
             ship.setArrival(ship.getArrival().getTime() +
@@ -139,5 +128,8 @@ public class Simulation {
             queues.get(ct).forEach(changeArrival);
             queues.get(ct).forEach(changeUnloading);
         }
+    }
+    private String formatTime(long time) {
+        return (time / 1000) / 86400 + ":" + (time / 1000) % 86400 / 3600 + ":" + (time / 1000) % 3600 / 60;
     }
 }
