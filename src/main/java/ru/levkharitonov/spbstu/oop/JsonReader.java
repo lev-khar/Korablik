@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static ru.levkharitonov.spbstu.oop.Ship.shipComparator;
 
-//TODO Костыль костыльнейший, нужно переделать
 public class JsonReader {
     public static Map<CargoType, ConcurrentLinkedQueue<Ship>> readSchedule() throws IOException {
         TypeReference<HashMap<String, ArrayList<Ship>>> typeRef = new TypeReference<>() {};

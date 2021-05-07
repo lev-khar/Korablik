@@ -65,8 +65,7 @@ public class Simulation {
         threads = 0;
         for (CargoType ct: workQueues.keySet()) {
             for(int i = 0; i < craneCount.get(ct); i++) {
-                Crane crane = new Crane();
-                crane.setShips(workQueues.get(ct));
+                Crane crane = new Crane(workQueues.get(ct), craneCount.get(ct));
                 cranes.add(crane);
                 threads++;
             }
