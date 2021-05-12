@@ -1,6 +1,7 @@
-package ru.levkharitonov.spbstu.oop;
+package ru.levkharitonov.spbstu.oop.simulation;
 
-import java.util.Date;
+import ru.levkharitonov.spbstu.oop.model.Ship;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;

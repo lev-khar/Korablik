@@ -1,4 +1,6 @@
-package ru.levkharitonov.spbstu.oop;
+package ru.levkharitonov.spbstu.oop.simulation;
+
+import ru.levkharitonov.spbstu.oop.model.Cargo;
 
 import java.util.Date;
 

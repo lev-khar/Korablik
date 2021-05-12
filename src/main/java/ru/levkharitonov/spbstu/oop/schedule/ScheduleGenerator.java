@@ -1,15 +1,14 @@
-package ru.levkharitonov.spbstu.oop;
+package ru.levkharitonov.spbstu.oop.schedule;
 
-import ru.levkharitonov.spbstu.oop.Cargo;
-import ru.levkharitonov.spbstu.oop.CargoType;
-import ru.levkharitonov.spbstu.oop.Ship;
+import ru.levkharitonov.spbstu.oop.model.Cargo;
+import ru.levkharitonov.spbstu.oop.model.CargoType;
+import ru.levkharitonov.spbstu.oop.model.Ship;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Consumer;
 
-import static ru.levkharitonov.spbstu.oop.Ship.shipComparator;
+import static ru.levkharitonov.spbstu.oop.model.Ship.shipComparator;
 
 public class ScheduleGenerator {
     final private static java.util.Random rand = new java.util.Random();

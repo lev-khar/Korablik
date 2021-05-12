@@ -1,10 +1,16 @@
 package ru.levkharitonov.spbstu.oop;
 
+import ru.levkharitonov.spbstu.oop.model.CargoType;
+import ru.levkharitonov.spbstu.oop.model.Ship;
+import ru.levkharitonov.spbstu.oop.JSONUtility.JsonReader;
+import ru.levkharitonov.spbstu.oop.JSONUtility.JsonWriter;
+import ru.levkharitonov.spbstu.oop.schedule.ScheduleGenerator;
+import ru.levkharitonov.spbstu.oop.simulation.Simulation;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.function.Consumer;
 
-import static ru.levkharitonov.spbstu.oop.Ship.print;
+import static ru.levkharitonov.spbstu.oop.model.Ship.print;
 
 public class Main {
     public static void main(String[] args) {

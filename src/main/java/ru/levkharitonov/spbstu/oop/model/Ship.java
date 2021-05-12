@@ -1,6 +1,7 @@
-package ru.levkharitonov.spbstu.oop;
+package ru.levkharitonov.spbstu.oop.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import ru.levkharitonov.spbstu.oop.JSONUtility.JsonDeserializer;
 
 import java.util.Comparator;
 import java.util.Date;

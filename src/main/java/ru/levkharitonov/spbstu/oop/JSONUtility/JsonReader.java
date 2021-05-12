@@ -1,14 +1,16 @@
-package ru.levkharitonov.spbstu.oop;
+package ru.levkharitonov.spbstu.oop.JSONUtility;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.levkharitonov.spbstu.oop.model.CargoType;
+import ru.levkharitonov.spbstu.oop.model.Ship;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static ru.levkharitonov.spbstu.oop.Ship.shipComparator;
+import static ru.levkharitonov.spbstu.oop.model.Ship.shipComparator;
 
 public class JsonReader {
     public static Map<CargoType, ConcurrentLinkedQueue<Ship>> readSchedule() throws IOException {

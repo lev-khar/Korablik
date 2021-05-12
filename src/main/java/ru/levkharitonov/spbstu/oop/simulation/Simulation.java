@@ -1,4 +1,8 @@
-package ru.levkharitonov.spbstu.oop;
+package ru.levkharitonov.spbstu.oop.simulation;
+
+import ru.levkharitonov.spbstu.oop.model.CargoType;
+import ru.levkharitonov.spbstu.oop.model.Ship;
+import ru.levkharitonov.spbstu.oop.JSONUtility.JsonReader;
 
 import java.io.IOException;
 import java.util.*;

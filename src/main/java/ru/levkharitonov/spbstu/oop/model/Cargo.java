@@ -1,4 +1,4 @@
-package ru.levkharitonov.spbstu.oop;
+package ru.levkharitonov.spbstu.oop.model;
 
 public class Cargo {
     private CargoType type;

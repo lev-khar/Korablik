@@ -1,4 +1,4 @@
-package ru.levkharitonov.spbstu.oop;
+package ru.levkharitonov.spbstu.oop.schedule;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

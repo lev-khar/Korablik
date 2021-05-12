@@ -1,12 +1,14 @@
-package ru.levkharitonov.spbstu.oop;
+package ru.levkharitonov.spbstu.oop.JSONUtility;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.levkharitonov.spbstu.oop.model.CargoType;
+import ru.levkharitonov.spbstu.oop.schedule.ScheduleGenerator;
+import ru.levkharitonov.spbstu.oop.model.Ship;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class JsonWriter {
