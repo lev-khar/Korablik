@@ -1,6 +1,8 @@
 package ru.levkharitonov.spbstu.oop.JSONUtility;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Service;
 import ru.levkharitonov.spbstu.oop.model.CargoType;
 import ru.levkharitonov.spbstu.oop.schedule.ScheduleGenerator;
 import ru.levkharitonov.spbstu.oop.model.Ship;
@@ -24,6 +26,15 @@ public class JsonWriter {
             ioe.printStackTrace();
         }
         return sg;
+    }
+
+    public static String organiseSchedule(int quantity) throws JsonProcessingException {
+        ScheduleGenerator sg = new ScheduleGenerator();
+        sg.generate(quantity);
+        addManually(sg);
+        Map<CargoType, ArrayList<Ship>> queues = ScheduleGenerator.getQueues();
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(queues);
     }
 
     public static void addManually(ScheduleGenerator sg) {
