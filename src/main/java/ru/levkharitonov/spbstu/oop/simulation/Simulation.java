@@ -116,7 +116,11 @@ public class Simulation {
         System.out.println("Average delay: " + formatTime(avgDelay));
         System.out.println("Fines for all ships: " + allDelay / UNIX_HOUR * FINE_HOUR);
         System.out.println("Cranes needed: " + threads);
+    }
 
+    public String formReport() {
+        //TODO
+        return "report";
     }
 
     Consumer<Ship> changeArrival = ship ->
