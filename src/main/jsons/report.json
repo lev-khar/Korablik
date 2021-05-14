@@ -1,0 +1,63 @@
+{
+  "unloads": [
+    {
+      "shipName": "Dishonest Tracy",
+      "cargo": {
+        "type": "CONTAINER",
+        "quantity": 10487
+      },
+      "arrival": 1618348389600,
+      "start": 1618348389600,
+      "end": 1618542129600,
+      "delay": 0
+    },
+    {
+      "shipName": "Charming Amber",
+      "cargo": {
+        "type": "LIQUID",
+        "quantity": 18054
+      },
+      "arrival": 1617419956073,
+      "start": 1617419956073,
+      "end": 1617470116073,
+      "delay": 0
+    },
+    {
+      "shipName": "Hopeful Sean",
+      "cargo": {
+        "type": "LIQUID",
+        "quantity": 41638
+      },
+      "arrival": 1617872388497,
+      "start": 1617872388497,
+      "end": 1617987288497,
+      "delay": 0
+    },
+    {
+      "shipName": "Lazy Frank",
+      "cargo": {
+        "type": "DRY",
+        "quantity": 66921
+      },
+      "arrival": 1619311286873,
+      "start": 1619311286873,
+      "end": 1619404286873,
+      "delay": 0
+    },
+    {
+      "shipName": "Willing Nancie",
+      "cargo": {
+        "type": "DRY",
+        "quantity": 146514
+      },
+      "arrival": 1618959315007,
+      "start": 1619404286873,
+      "end": 1619558906873,
+      "delay": 444971866
+    }
+  ],
+  "avgDelay": 88994373,
+  "allDelay": 444971866,
+  "maxDelay": 444971866,
+  "cranes": 3
+}
