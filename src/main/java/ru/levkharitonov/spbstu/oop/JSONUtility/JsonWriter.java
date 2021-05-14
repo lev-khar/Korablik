@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.levkharitonov.spbstu.oop.model.CargoType;
 import ru.levkharitonov.spbstu.oop.schedule.ScheduleGenerator;
 import ru.levkharitonov.spbstu.oop.model.Ship;
+import ru.levkharitonov.spbstu.oop.simulation.Report;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,15 @@ public class JsonWriter {
             ioe.printStackTrace();
         }
         return sg;
+    }
+
+    public static void writeReport(Report report) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.writeValue(new File("src/main/jsons/report.json"), report);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
     public static String organiseSchedule(int quantity) throws JsonProcessingException {

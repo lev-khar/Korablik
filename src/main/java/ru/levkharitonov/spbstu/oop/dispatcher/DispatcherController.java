@@ -10,6 +10,7 @@ import ru.levkharitonov.spbstu.oop.JSONUtility.JsonReader;
 import ru.levkharitonov.spbstu.oop.JSONUtility.JsonWriter;
 import ru.levkharitonov.spbstu.oop.model.CargoType;
 import ru.levkharitonov.spbstu.oop.model.Ship;
+import ru.levkharitonov.spbstu.oop.simulation.Report;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -34,14 +35,14 @@ public class DispatcherController {
 
     @PostMapping("/report")
     @ResponseBody
-    public void saveReport(@RequestParam String report) {
+    public void saveReport(@RequestBody Report report) {
         System.out.println(report);
-        //TODO write to JSON
+        JsonWriter.writeReport(report);
     }
 
     @GetMapping(value ="/dispatch-schedule")
     @ResponseBody
-    public String dispatchSchedule() {
+    public File dispatchSchedule() {
         if((this.sfile == null) || !this.sfile.exists()) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not initialised");
         RestTemplate rt = new RestTemplate();
         String address = "http://localhost:8088/schedule?quantity=" + quantity;
@@ -55,7 +56,7 @@ public class DispatcherController {
             e.printStackTrace();
         }
 
-        return schedule;
+        return this.sfile;
     }
 
     @GetMapping(value ="/download-schedule")

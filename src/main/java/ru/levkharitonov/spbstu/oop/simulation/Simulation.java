@@ -15,12 +15,10 @@ import java.util.stream.Collectors;
 public class Simulation {
     final private static java.util.Random rand = new java.util.Random();
     final private static long CRANE_COST = 30000;
-    final private static int FINE_HOUR = 100;
-    final private static int UNIX_DAY = 86400000;
-    final private static long UNIX_MINS = 60000;
-    final private static long UNIX_HOUR = 3600000;
-    final private static Date DATE_START = new Date(1617235199000L);
-    final private static Date DATE_END = new Date(1619827200000L);
+    final public static int FINE_HOUR = 100;
+    final public static int UNIX_DAY = 86400000;
+    final public static long UNIX_MINS = 60000;
+    final public static long UNIX_HOUR = 3600000;
     final private File file;
     private Map<CargoType, ConcurrentLinkedQueue<Ship>> queues;
     private List<UnloadingEvent> unloads;
@@ -124,9 +122,17 @@ public class Simulation {
         System.out.println("Cranes needed: " + threads);
     }
 
-    public String formReport() {
-        //TODO
-        return "report";
+    public Report formReport() {
+        long avgDelay = 0;
+        long allDelay = 0;
+        long maxDelay = 0;
+        for (UnloadingEvent unload: unloads) {
+            maxDelay = Math.max(maxDelay, unload.getDelay());
+            avgDelay += unload.getDelay();
+            allDelay += unload.getDelay();
+        }
+        avgDelay /= unloads.size();
+        return new Report(this.unloads, avgDelay, allDelay, maxDelay, this.threads);
     }
 
     Consumer<Ship> changeArrival = ship ->
@@ -142,7 +148,7 @@ public class Simulation {
             queues.get(ct).forEach(changeUnloading);
         }
     }
-    private String formatTime(long time) {
+    public static String formatTime(long time) {
         return (time / 1000) / 86400 + ":" + (time / 1000) % 86400 / 3600 + ":" + (time / 1000) % 3600 / 60;
     }
 }
