@@ -14,7 +14,7 @@ public class ScheduleController {
 
     @GetMapping(value ="/schedule")
     @ResponseBody
-    public String getSchedule(@RequestParam Integer quantity) {
+    public String getSchedule(@RequestParam Integer quantity) { //TODO переместить сюда параметр колическая кораблей чеез консоль
         if(quantity == null) {
             quantity = 15;
         }

@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class JsonWriter {
-    public static ScheduleGenerator writeSchedule(int quantity) {
+    public static ScheduleGenerator dwriteSchedule(int quantity) {
         ScheduleGenerator sg = new ScheduleGenerator();
         sg.generate(quantity);
         addManually(sg);

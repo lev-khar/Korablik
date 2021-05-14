@@ -13,12 +13,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import static ru.levkharitonov.spbstu.oop.model.Ship.shipComparator;
 
 public class JsonReader {
-    public static Map<CargoType, ConcurrentLinkedQueue<Ship>> readSchedule() throws IOException {
+    public static Map<CargoType, ConcurrentLinkedQueue<Ship>> readSchedule(File file) throws IOException {
         TypeReference<HashMap<String, ArrayList<Ship>>> typeRef = new TypeReference<>() {};
         HashMap<String, ArrayList<Ship>> queues = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         try {
-            queues = mapper.readValue(new File("src/main/jsons/schedule.json"), typeRef);
+            queues = mapper.readValue(file, typeRef);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

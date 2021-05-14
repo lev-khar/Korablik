@@ -1,9 +1,11 @@
 package ru.levkharitonov.spbstu.oop.simulation;
 
+import org.springframework.lang.NonNull;
 import ru.levkharitonov.spbstu.oop.model.CargoType;
 import ru.levkharitonov.spbstu.oop.model.Ship;
 import ru.levkharitonov.spbstu.oop.JSONUtility.JsonReader;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -19,21 +21,25 @@ public class Simulation {
     final private static long UNIX_HOUR = 3600000;
     final private static Date DATE_START = new Date(1617235199000L);
     final private static Date DATE_END = new Date(1619827200000L);
+    final private File file;
     private Map<CargoType, ConcurrentLinkedQueue<Ship>> queues;
     private List<UnloadingEvent> unloads;
     private int threads = 0;
 
-    public Simulation() {
+    public Simulation(File file) {
+        if (!file.exists()) this.queues = null;
+        this.file = file;
         try {
-            this.queues = JsonReader.readSchedule();
+            this.queues = JsonReader.readSchedule(file);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public void simulate() {
         try {
-            this.queues = JsonReader.readSchedule();
+            this.queues = JsonReader.readSchedule(file);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,7 +51,7 @@ public class Simulation {
         boolean modified;
         do {
             try {
-                this.queues = JsonReader.readSchedule();
+                this.queues = JsonReader.readSchedule(file);
             } catch (IOException e) {
                 e.printStackTrace();
             }
