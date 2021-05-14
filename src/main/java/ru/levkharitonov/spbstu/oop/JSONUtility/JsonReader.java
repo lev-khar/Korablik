@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.levkharitonov.spbstu.oop.model.CargoType;
 import ru.levkharitonov.spbstu.oop.model.Ship;
+import ru.levkharitonov.spbstu.oop.model.Report;
 
 import java.io.File;
 import java.io.IOException;

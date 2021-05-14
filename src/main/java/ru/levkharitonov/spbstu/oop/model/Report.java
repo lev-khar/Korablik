@@ -1,7 +1,10 @@
-package ru.levkharitonov.spbstu.oop.simulation;
+package ru.levkharitonov.spbstu.oop.model;
+
+import ru.levkharitonov.spbstu.oop.simulation.UnloadingEvent;
 
 import java.util.List;
 
+import static ru.levkharitonov.spbstu.oop.Utility.*;
 import static ru.levkharitonov.spbstu.oop.simulation.Simulation.*;
 
 public class Report {

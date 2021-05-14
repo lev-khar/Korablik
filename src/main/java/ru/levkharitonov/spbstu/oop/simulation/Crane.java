@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static ru.levkharitonov.spbstu.oop.Utility.UNIX_MINS;
+
 public class Crane implements Callable<List<UnloadingEvent>> {
-    final private static long UNIX_MINS = 60000;
     private ConcurrentLinkedQueue<Ship> ships;
     private List<UnloadingEvent> unloads;
     final private int numberOfCranes;
@@ -36,7 +37,7 @@ public class Crane implements Callable<List<UnloadingEvent>> {
             busy = end;
             UnloadingEvent unload = new UnloadingEvent(ship.getName(), ship.getCargo(), arrival, start, end, delay);
             unloads.add(unload);
-            Thread.sleep(20);
+            Thread.sleep(2);
         }
         return unloads;
     }

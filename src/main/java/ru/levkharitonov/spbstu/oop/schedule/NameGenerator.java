@@ -34,9 +34,7 @@ public class NameGenerator {
                 list.add(line);
                 line = fb.readLine();
             }
-        }catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return list;

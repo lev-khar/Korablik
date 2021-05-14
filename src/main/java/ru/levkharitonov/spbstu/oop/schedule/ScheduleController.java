@@ -14,12 +14,15 @@ public class ScheduleController {
 
     @GetMapping(value ="/schedule")
     @ResponseBody
-    public String getSchedule(@RequestParam Integer quantity) { //TODO переместить сюда параметр колическая кораблей чеез консоль
-        if(quantity == null) {
+    public String getSchedule(@RequestParam Integer quantity, @RequestParam Integer add) {
+        if (quantity == null) {
             quantity = 15;
         }
+        if (add == null) {
+            add = 0;
+        }
         try {
-            return JsonWriter.organiseSchedule(quantity);
+            return JsonWriter.organiseSchedule(quantity, add);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return "Error in serialization";

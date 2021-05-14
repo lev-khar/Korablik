@@ -1,7 +1,7 @@
 package ru.levkharitonov.spbstu.oop.simulation;
 
-import org.springframework.lang.NonNull;
 import ru.levkharitonov.spbstu.oop.model.CargoType;
+import ru.levkharitonov.spbstu.oop.model.Report;
 import ru.levkharitonov.spbstu.oop.model.Ship;
 import ru.levkharitonov.spbstu.oop.JSONUtility.JsonReader;
 
@@ -12,13 +12,10 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static ru.levkharitonov.spbstu.oop.Utility.*;
+
 public class Simulation {
     final private static java.util.Random rand = new java.util.Random();
-    final private static long CRANE_COST = 30000;
-    final public static int FINE_HOUR = 100;
-    final public static int UNIX_DAY = 86400000;
-    final public static long UNIX_MINS = 60000;
-    final public static long UNIX_HOUR = 3600000;
     final private File file;
     private Map<CargoType, ConcurrentLinkedQueue<Ship>> queues;
     private List<UnloadingEvent> unloads;
@@ -100,28 +97,6 @@ public class Simulation {
         return delayFines;
     }
 
-    private void printUnloadingEvents() {
-        unloads.forEach(System.out::println);
-    }
-
-    public void printReport() {
-        printUnloadingEvents();
-        long avgDelay = 0;
-        long allDelay = 0;
-        long maxDelay = 0;
-        for (UnloadingEvent unload: unloads) {
-            maxDelay = Math.max(maxDelay, unload.getDelay());
-            avgDelay += unload.getDelay();
-            allDelay += unload.getDelay();
-        }
-        avgDelay /= unloads.size();
-        System.out.println("\nShips unloaded: " + unloads.size());
-        System.out.println("Max delay: " + formatTime(maxDelay));
-        System.out.println("Average delay: " + formatTime(avgDelay));
-        System.out.println("Fines for all ships: " + allDelay / UNIX_HOUR * FINE_HOUR);
-        System.out.println("Cranes needed: " + threads);
-    }
-
     public Report formReport() {
         long avgDelay = 0;
         long allDelay = 0;
@@ -148,7 +123,5 @@ public class Simulation {
             queues.get(ct).forEach(changeUnloading);
         }
     }
-    public static String formatTime(long time) {
-        return (time / 1000) / 86400 + ":" + (time / 1000) % 86400 / 3600 + ":" + (time / 1000) % 3600 / 60;
-    }
+
 }
